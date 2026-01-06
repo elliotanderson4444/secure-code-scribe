@@ -1,24 +1,28 @@
-import { Shield, LayoutDashboard, Scan, History, Settings, ChevronLeft, ChevronRight } from "lucide-react";
+import { Shield, LayoutDashboard, Scan, History, Settings, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Scan", url: "/scan", icon: Scan },
-  { title: "History", url: "/history", icon: History },
-  { title: "Settings", url: "/settings", icon: Settings },
-];
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function AppSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { t, dir } = useTranslation();
+
+  const navItems = [
+    { title: t.nav.dashboard, url: "/", icon: LayoutDashboard },
+    { title: t.nav.scan, url: "/scan", icon: Scan },
+    { title: "Features", url: "/features", icon: Sparkles },
+    { title: t.nav.history, url: "/history", icon: History },
+    { title: t.nav.settings, url: "/settings", icon: Settings },
+  ];
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-40 h-screen bg-sidebar border-r border-sidebar-border transition-all duration-300 flex flex-col",
-        collapsed ? "w-16" : "w-64"
+        "fixed top-0 z-40 h-screen bg-sidebar border-sidebar-border transition-all duration-300 flex flex-col",
+        collapsed ? "w-16" : "w-64",
+        dir === "rtl" ? "right-0 border-l" : "left-0 border-r"
       )}
     >
       {/* Logo */}
@@ -41,7 +45,7 @@ export function AppSidebar() {
           const isActive = location.pathname === item.url;
           return (
             <NavLink
-              key={item.title}
+              key={item.url}
               to={item.url}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
@@ -51,7 +55,10 @@ export function AppSidebar() {
               )}
             >
               {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                <div className={cn(
+                  "absolute top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-full",
+                  dir === "rtl" ? "right-0 rounded-l-full rounded-r-none" : "left-0 rounded-r-full rounded-l-none"
+                )} />
               )}
               <item.icon className={cn("h-5 w-5 flex-shrink-0", isActive && "text-primary")} />
               {!collapsed && (
@@ -69,11 +76,11 @@ export function AppSidebar() {
           className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors"
         >
           {collapsed ? (
-            <ChevronRight className="h-5 w-5" />
+            dir === "rtl" ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />
           ) : (
             <>
-              <ChevronLeft className="h-5 w-5" />
-              <span className="text-sm">Collapse</span>
+              {dir === "rtl" ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+              <span className="text-sm">{t.nav.collapse}</span>
             </>
           )}
         </button>
