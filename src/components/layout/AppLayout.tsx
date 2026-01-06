@@ -3,6 +3,7 @@ import { AppSidebar } from "./AppSidebar";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -10,23 +11,26 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { dir } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={dir}>
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <AppSidebar />
       </div>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-background/80 backdrop-blur-xl border-b border-border flex items-center px-4">
+      <div className={cn(
+        "lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-background/80 backdrop-blur-xl border-b border-border flex items-center px-4"
+      )}>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="p-2 rounded-lg hover:bg-muted transition-colors"
         >
           <Menu className="h-5 w-5" />
         </button>
-        <div className="flex items-center gap-2 ml-3">
+        <div className={cn("flex items-center gap-2", dir === "rtl" ? "mr-3" : "ml-3")}>
           <div className="h-6 w-6 rounded-lg bg-primary/20 flex items-center justify-center">
             <span className="text-primary text-xs font-bold">SG</span>
           </div>
@@ -41,7 +45,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
-            className="w-64 h-full"
+            className={cn("w-64 h-full", dir === "rtl" ? "mr-auto" : "ml-0")}
             onClick={(e) => e.stopPropagation()}
           >
             <AppSidebar />
@@ -52,8 +56,8 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Main Content */}
       <main
         className={cn(
-          "min-h-screen transition-all duration-300",
-          "lg:ml-64 pt-14 lg:pt-0"
+          "min-h-screen transition-all duration-300 pt-14 lg:pt-0",
+          dir === "rtl" ? "lg:mr-64" : "lg:ml-64"
         )}
       >
         <div className="p-4 lg:p-8">
