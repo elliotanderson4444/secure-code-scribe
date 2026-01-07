@@ -29,12 +29,12 @@ export function AppSidebar() {
       <div className="flex items-center gap-3 px-4 h-16 border-b border-sidebar-border">
         <div className="relative">
           <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
-          <Shield className="h-8 w-8 text-primary relative" />
+          <img src="/assets/logo.png" alt="CyberLens AI Logo" className="h-10 w-10 relative object-contain" />
         </div>
         {!collapsed && (
           <div className="animate-fade-in">
-            <h1 className="text-lg font-bold gradient-text">CyberLens</h1>
-            <p className="text-[10px] text-muted-foreground -mt-1">AI Security</p>
+            <h1 className="text-lg font-bold gradient-text">CyberLens AI</h1>
+            <p className="text-[10px] text-muted-foreground -mt-1">AI Security Insights</p>
           </div>
         )}
       </div>
