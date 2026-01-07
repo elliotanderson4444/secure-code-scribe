@@ -107,7 +107,7 @@ export const translations = {
     // Benefits
     benefits: {
       title: "Why Choose",
-      titleHighlight: "SafeGuard AI",
+      titleHighlight: "CyberLens AI",
       subtitle: "Transform your security workflow with intelligent automation",
       benefit1Title: "Reduce Security Risks by 90%",
       benefit1Desc: "Identify and fix vulnerabilities before they become threats",
@@ -237,7 +237,7 @@ export const translations = {
     // Benefits
     benefits: {
       title: "Pourquoi choisir",
-      titleHighlight: "SafeGuard AI",
+      titleHighlight: "CyberLens AI",
       subtitle: "Transformez votre flux de travail de sécurité avec l'automatisation intelligente",
       benefit1Title: "Réduisez les risques de 90%",
       benefit1Desc: "Identifiez et corrigez les vulnérabilités avant qu'elles ne deviennent des menaces",
@@ -367,7 +367,7 @@ export const translations = {
     // Benefits
     benefits: {
       title: "لماذا تختار",
-      titleHighlight: "SafeGuard AI",
+      titleHighlight: "CyberLens AI",
       subtitle: "حوّل سير عمل الأمان الخاص بك مع الأتمتة الذكية",
       benefit1Title: "قلل المخاطر الأمنية بنسبة 90%",
       benefit1Desc: "حدد وأصلح الثغرات قبل أن تصبح تهديدات",

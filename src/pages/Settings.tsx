@@ -38,7 +38,7 @@ export default function Settings() {
           <span className="gradient-text">{t.settings.title}</span>
         </h1>
         <p className="text-muted-foreground">
-          {t.settings.subtitle}
+          {language === "ar" ? "قم بتكوين تفضيلات CyberLens AI الخاصة بك" : t.settings.subtitle}
         </p>
       </div>
 

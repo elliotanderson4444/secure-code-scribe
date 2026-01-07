@@ -49,7 +49,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <div className="h-6 w-6 rounded-lg bg-primary/20 flex items-center justify-center">
               <span className="text-primary text-xs font-bold">SG</span>
             </div>
-            <span className="font-semibold gradient-text">SafeGuard AI</span>
+            <span className="font-semibold gradient-text">CyberLens AI</span>
           </div>
         </div>
 

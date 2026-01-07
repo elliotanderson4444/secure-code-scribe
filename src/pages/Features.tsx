@@ -110,8 +110,8 @@ export default function Features() {
         </h2>
         <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
           {language === "ar" 
-            ? "انضم إلى آلاف المطورين الذين يثقون في SafeGuard AI لتأمين تطبيقاتهم"
-            : "Join thousands of developers who trust SafeGuard AI to secure their applications"
+            ? "انضم إلى آلاف المطورين الذين يثقون في CyberLens AI لتأمين تطبيقاتهم"
+            : "Join thousands of developers who trust CyberLens AI to secure their applications"
           }
         </p>
         <a
