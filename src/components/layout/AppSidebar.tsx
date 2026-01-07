@@ -12,7 +12,7 @@ export function AppSidebar() {
   const navItems = [
     { title: t.nav.dashboard, url: "/", icon: LayoutDashboard },
     { title: t.nav.scan, url: "/scan", icon: Scan },
-    { title: "Features", url: "/features", icon: Sparkles },
+    { title: t.nav.features || "Features", url: "/features", icon: Sparkles },
     { title: t.nav.history, url: "/history", icon: History },
     { title: t.nav.settings, url: "/settings", icon: Settings },
   ];
