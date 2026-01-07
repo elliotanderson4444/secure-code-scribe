@@ -8,6 +8,7 @@ export const translations = {
       scan: "Scan",
       history: "History",
       settings: "Settings",
+      features: "Features",
       collapse: "Collapse",
     },
     // Dashboard
@@ -137,6 +138,7 @@ export const translations = {
       scan: "Analyser",
       history: "Historique",
       settings: "Paramètres",
+      features: "Fonctionnalités",
       collapse: "Réduire",
     },
     // Dashboard
@@ -266,6 +268,7 @@ export const translations = {
       scan: "فحص",
       history: "السجل",
       settings: "الإعدادات",
+      features: "المميزات",
       collapse: "طي",
     },
     // Dashboard

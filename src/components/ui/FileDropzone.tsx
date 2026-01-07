@@ -1,6 +1,7 @@
-import { Upload, FileCode, FileJson, File } from "lucide-react";
-import { useCallback, useState } from "react";
+import { Upload, FileCode, FileJson, File, X } from "lucide-react";
+import { useCallback, useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface FileDropzoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -16,45 +17,93 @@ const fileTypeIcons: Record<string, typeof FileCode> = {
   ".csv": File,
 };
 
+// Security: Max file size 10MB, max files 20
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const MAX_FILES = 20;
+
 export function FileDropzone({ onFilesSelected, acceptedTypes = [".py", ".js", ".ts", ".tsx", ".json", ".csv"] }: FileDropzoneProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const { t, dir } = useTranslation();
+
+  const validateFiles = useCallback((files: File[]): File[] => {
+    setError(null);
+    
+    // Filter by accepted types
+    const validTypeFiles = files.filter(file => 
+      acceptedTypes.some(type => file.name.toLowerCase().endsWith(type))
+    );
+    
+    if (validTypeFiles.length !== files.length) {
+      setError(dir === "rtl" ? "بعض الملفات غير مدعومة" : "Some files have unsupported types");
+    }
+    
+    // Filter by size
+    const validSizeFiles = validTypeFiles.filter(file => file.size <= MAX_FILE_SIZE);
+    if (validSizeFiles.length !== validTypeFiles.length) {
+      setError(dir === "rtl" ? "بعض الملفات كبيرة جداً (الحد الأقصى 10MB)" : "Some files are too large (max 10MB)");
+    }
+    
+    // Limit number of files
+    if (validSizeFiles.length > MAX_FILES) {
+      setError(dir === "rtl" ? `الحد الأقصى ${MAX_FILES} ملف` : `Maximum ${MAX_FILES} files allowed`);
+      return validSizeFiles.slice(0, MAX_FILES);
+    }
+    
+    return validSizeFiles;
+  }, [acceptedTypes, dir]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
     
-    const files = Array.from(e.dataTransfer.files).filter(file => 
-      acceptedTypes.some(type => file.name.endsWith(type))
-    );
+    const files = validateFiles(Array.from(e.dataTransfer.files));
     
     if (files.length > 0) {
       setSelectedFiles(files);
       onFilesSelected(files);
     }
-  }, [acceptedTypes, onFilesSelected]);
+  }, [validateFiles, onFilesSelected]);
 
   const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    const files = validateFiles(Array.from(e.target.files || []));
     if (files.length > 0) {
       setSelectedFiles(files);
       onFilesSelected(files);
     }
-  }, [onFilesSelected]);
+    // Reset input value to allow re-selecting same files
+    e.target.value = "";
+  }, [validateFiles, onFilesSelected]);
 
-  const getFileIcon = (filename: string) => {
-    const ext = acceptedTypes.find(type => filename.endsWith(type));
+  const removeFile = useCallback((index: number) => {
+    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    setSelectedFiles(newFiles);
+    onFilesSelected(newFiles);
+  }, [selectedFiles, onFilesSelected]);
+
+  const getFileIcon = useMemo(() => (filename: string) => {
+    const ext = acceptedTypes.find(type => filename.toLowerCase().endsWith(type));
     return ext ? fileTypeIcons[ext] || File : File;
+  }, [acceptedTypes]);
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
@@ -76,6 +125,7 @@ export function FileDropzone({ onFilesSelected, acceptedTypes = [".py", ".js", "
           accept={acceptedTypes.join(",")}
           onChange={handleFileInput}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          aria-label={t.scan.dragDrop}
         />
         
         <div className="p-8 lg:p-12 flex flex-col items-center text-center">
@@ -90,10 +140,13 @@ export function FileDropzone({ onFilesSelected, acceptedTypes = [".py", ".js", "
           </div>
           
           <h3 className="text-lg font-semibold mb-2">
-            {isDragging ? "Drop files here" : "Drag & Drop Files"}
+            {isDragging 
+              ? (dir === "rtl" ? "أفلت الملفات هنا" : "Drop files here") 
+              : t.scan.dragDrop
+            }
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            or click to browse your files
+            {t.scan.orClick}
           </p>
           
           <div className="flex flex-wrap justify-center gap-2">
@@ -116,25 +169,42 @@ export function FileDropzone({ onFilesSelected, acceptedTypes = [".py", ".js", "
         )}
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Selected Files */}
       {selectedFiles.length > 0 && (
         <div className="glass-panel p-4 space-y-2 animate-fade-in">
           <p className="text-sm font-medium text-muted-foreground mb-3">
-            Selected Files ({selectedFiles.length})
+            {t.scan.selectedFiles} ({selectedFiles.length})
           </p>
           {selectedFiles.map((file, index) => {
             const FileIcon = getFileIcon(file.name);
             return (
               <div
-                key={index}
-                className="flex items-center gap-3 p-2 rounded-lg bg-muted/30 animate-slide-in"
+                key={`${file.name}-${index}`}
+                className={cn(
+                  "flex items-center gap-3 p-2 rounded-lg bg-muted/30 animate-slide-in group",
+                  dir === "rtl" && "flex-row-reverse"
+                )}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <FileIcon className="h-4 w-4 text-primary" />
-                <span className="text-sm truncate flex-1">{file.name}</span>
-                <span className="text-xs text-muted-foreground">
-                  {(file.size / 1024).toFixed(1)} KB
+                <FileIcon className="h-4 w-4 text-primary flex-shrink-0" />
+                <span className="text-sm truncate flex-1" title={file.name}>{file.name}</span>
+                <span className="text-xs text-muted-foreground flex-shrink-0">
+                  {formatFileSize(file.size)}
                 </span>
+                <button
+                  onClick={() => removeFile(index)}
+                  className="p-1 rounded hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+                  aria-label={`Remove ${file.name}`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
               </div>
             );
           })}
