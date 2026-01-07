@@ -33,7 +33,7 @@ export function AppSidebar() {
         </div>
         {!collapsed && (
           <div className="animate-fade-in">
-            <h1 className="text-lg font-bold gradient-text">SafeGuard</h1>
+            <h1 className="text-lg font-bold gradient-text">CyberLens</h1>
             <p className="text-[10px] text-muted-foreground -mt-1">AI Security</p>
           </div>
         )}
