@@ -11,14 +11,28 @@ type TranslationContextType = {
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
 
-export function TranslationProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(() => {
+function getInitialLanguage(): Language {
+  if (typeof window === "undefined") return "en";
+  try {
     const saved = localStorage.getItem("safeguard-lang");
-    return (saved as Language) || "en";
-  });
+    if (saved && (saved === "en" || saved === "fr" || saved === "ar")) {
+      return saved;
+    }
+  } catch {
+    // localStorage might not be available
+  }
+  return "en";
+}
+
+export function TranslationProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>(getInitialLanguage);
 
   useEffect(() => {
-    localStorage.setItem("safeguard-lang", language);
+    try {
+      localStorage.setItem("safeguard-lang", language);
+    } catch {
+      // Ignore localStorage errors
+    }
     document.documentElement.dir = getDirection(language);
     document.documentElement.lang = language;
   }, [language]);
@@ -42,7 +56,7 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
 
 export function useTranslation() {
   const context = useContext(TranslationContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useTranslation must be used within a TranslationProvider");
   }
   return context;
