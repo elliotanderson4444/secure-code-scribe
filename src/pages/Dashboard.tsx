@@ -97,8 +97,8 @@ export default function Dashboard() {
         <div className="lg:col-span-2 glass-panel p-8 flex flex-col items-center justify-center text-center">
           <div className="relative mb-6">
             <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full" />
-            <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center">
-              <Sparkles className="h-10 w-10 text-primary" />
+            <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center overflow-hidden">
+              <img src="/assets/logo.png" alt="CyberLens AI Logo" className="w-full h-full object-contain p-2" />
             </div>
           </div>
           <h3 className="text-xl lg:text-2xl font-bold mb-3">
@@ -134,7 +134,7 @@ export default function Dashboard() {
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90 glow-primary"
           >
-            <Shield className={cn("h-5 w-5", dir === "rtl" ? "ml-2" : "mr-2")} />
+            <Scan className={cn("h-5 w-5", dir === "rtl" ? "ml-2" : "mr-2")} />
             {language === "ar" ? "ابدأ الفحص المجاني" : language === "fr" ? "Démarrer l'analyse gratuite" : "Start Free Scan"}
           </Button>
         </div>
